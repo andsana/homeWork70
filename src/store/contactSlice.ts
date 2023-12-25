@@ -1,14 +1,14 @@
 import {Contact} from '../types';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {deleteContact, fetchContacts} from './contactThunks';
+import {createContact, deleteContact, editContact, fetchContacts} from './contactThunks';
 import {RootState} from '../app/store';
 
 interface ContactState {
   contacts: Contact[];
   contact: Contact | null;
   fetchLoading: boolean,
-  createContact: boolean,
-  editLoading: false | string;
+  createLoading: boolean,
+  editLoading: boolean;
   deleteLoading: false | string;
   showModal: boolean;
 }
@@ -18,7 +18,7 @@ const initialState: ContactState = {
   // contact: {id: '', name: '', phone: 0, email: '', photo: ''},
   contact: null,
   fetchLoading: false,
-  createContact: false,
+  createLoading: false,
   editLoading: false,
   deleteLoading: false,
   showModal: false,
@@ -45,6 +45,16 @@ export const contactSlice = createSlice({
       state.fetchLoading = false;
     });
 
+    builder.addCase(editContact.pending, (state) => {
+      state.editLoading = true;
+    });
+    builder.addCase(editContact.fulfilled, (state) => {
+      state.editLoading = false;
+    });
+    builder.addCase(editContact.rejected, (state) => {
+      state.editLoading = false;
+    });
+
     builder.addCase(deleteContact.pending, (state, {meta}) => {
       state.deleteLoading = meta.arg;
     });
@@ -56,17 +66,15 @@ export const contactSlice = createSlice({
     });
 
 
-
-
-    // builder.addCase(createContact.pending, (state) => {
-    //   state.createLoading = true;
-    // });
-    // builder.addCase(createContact.fulfilled, (state) => {
-    //   state.createLoading = false;
-    // });
-    // builder.addCase(createContact.rejected, (state) => {
-    //   state.createLoading = false;
-    // });
+    builder.addCase(createContact.pending, (state) => {
+      state.createLoading = true;
+    });
+    builder.addCase(createContact.fulfilled, (state) => {
+      state.createLoading = false;
+    });
+    builder.addCase(createContact.rejected, (state) => {
+      state.createLoading = false;
+    });
   }
 });
 
@@ -78,5 +86,8 @@ export const selectShowModal = (state: RootState) => state.contact.showModal;
 export const contactReducer = contactSlice.reducer;
 export const selectContacts = (state: RootState) => state.contact.contacts;
 export const selectFetchLoading = (state: RootState) => state.contact.fetchLoading;
+
+export const selectCreateLoading = (state: RootState) => state.contact.createLoading;
+export const selectEditLoading = (state: RootState) => state.contact.editLoading;
 export const selectDeleteLoading = (state: RootState) => state.contact.deleteLoading;
 

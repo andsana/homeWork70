@@ -44,10 +44,10 @@ const Modal: React.FC = () => {
                 </div>
               </div>
               <div className="modal-footer">
-                <Link to={'/edit-dish/' + contact.id} className="btn btn-primary">Edit</Link>
+                <Link to={'/edit-contact/' + contact.id} className="btn btn-primary">Edit</Link>
                 <button
                   className="btn btn-danger"
-                  onClick={() => dispatch(deleteContact(contact.id))}
+                  onClick={() => {dispatch(deleteContact(contact.id)); dispatch(showModal(contact));}}
                   disabled={deleteLoading ? deleteLoading === contact.id : false}
                 >
                   {deleteLoading && deleteLoading === contact.id && <ButtonSpinner />}

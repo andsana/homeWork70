@@ -1,11 +1,8 @@
 import * as React from 'react';
 import {useState} from 'react';
-import {ContactMutation} from '../../types';
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {postContact} from '../../store/contactThunks';
-import {selectFetchLoading} from '../../store/contactSlice';
+import {ApiContact, ContactMutation} from '../../types';
 import ButtonSpinner from '../Spinner/ButtonSpinner';
-import {Link, useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 const initialState: ContactMutation = {
   name: '',
@@ -14,19 +11,17 @@ const initialState: ContactMutation = {
   photo: '',
 };
 
-// interface Props {
-//   onSubmit: (contact: ApiContact) => void;
-//   existingContact?: ContactMutation;
-//   isEdit?: boolean;
-//   isLoading?: boolean;
-// }
+interface Props {
+  onSubmit: (contact: ApiContact) => void;
+  existingContact?: ContactMutation;
+  isEdit?: boolean;
+  isLoading?: boolean;
+}
 
 
-const ContactForm = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const fetchLoading = useAppSelector(selectFetchLoading);
-  const [contact, setContact] = useState<ContactMutation>(initialState);
+const ContactForm: React.FC<Props> = ({onSubmit, existingContact = initialState, isEdit = false, isLoading = false}) => {
+
+  const [contact, setContact] = useState<ContactMutation>(existingContact);
   const [photoPreview, setPhotoPreview] = useState<string | null>('');
 
   const changeContact = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,16 +39,17 @@ const ContactForm = () => {
 
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await dispatch(postContact(contact));
-    setContact(initialState);
-    setPhotoPreview('');
-    navigate('/');
+      if (isLoading) return;
+      onSubmit({
+          ...contact,
+          phone: parseFloat(contact.phone),
+      });
   };
 
   return (
     <>
       <form className="mt-3" onSubmit={onFormSubmit} style={{maxWidth: '400px'}}>
-        {/*<h4>{isEdit ? 'Edit contact' : 'Add new contact'}</h4>*/}
+        <h4>{isEdit ? 'Edit contact' : 'Add new contact'}</h4>
         <div className="form-group">
           <div className="mb-3 row">
             <label className="col-sm-2 col-form-label" htmlFor="phone">Name</label>
@@ -126,17 +122,10 @@ const ContactForm = () => {
           </div>
 
         )}
-        {/*{photoPreview && (*/}
-        {/*  <div className="form-group mt-3 d-flex text-start">*/}
-        {/*    <label className="me-3">Photo preview</label>*/}
-        {/*    <img src={photoPreview} alt="Preview" style={{ maxWidth: '150px' }} />*/}
-        {/*  </div>*/}
-        {/*)}*/}
-          <button type="submit" className="btn btn-primary m-2" disabled={fetchLoading}>
-            {fetchLoading && <ButtonSpinner/>}
+          <button type="submit" className="btn btn-primary m-2" disabled={isLoading}>
+            {isLoading && <ButtonSpinner/>}
             save
           </button>
-
         <Link to="/" className="btn btn-primary">
           Back to contacts
         </Link>

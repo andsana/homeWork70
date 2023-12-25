@@ -1,19 +1,7 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {ApiContact, Contact, ContactMutation} from '../types';
+import {ApiContact, Contact} from '../types';
 import axiosApi from '../axiosApi/axiosApi';
 import {AppDispatch} from '../app/store';
-
-export const postContact = createAsyncThunk<void, ContactMutation, {dispatch: AppDispatch}>(
-  'contact/post',
-  async (contact, thunkAPI) => {
-    const data: ApiContact = {
-      ...contact,
-      phone: parseFloat(contact.phone),
-    };
-    await axiosApi.post('/contact.json', data);
-    await thunkAPI.dispatch(fetchContacts());
-  }
-);
 
 export const fetchContacts = createAsyncThunk<Contact[]>(
   'contact/fetchContacts',
@@ -37,7 +25,39 @@ export const fetchContacts = createAsyncThunk<Contact[]>(
   }
 );
 
-export const deleteContact = createAsyncThunk<void, string, {dispatch: AppDispatch}>(
+export const fetchOneContact = createAsyncThunk<ApiContact, string>(
+    'contact/fetchOne',
+    async (contactId) => {
+        const response = await axiosApi.get<ApiContact | null>(`/contact/${contactId}.json`);
+        const contact = response.data;
+
+        if (contact === null) {
+            throw new Error('Not found');
+        }
+        return contact;
+    }
+);
+
+interface UpdateContactParams {
+    id: string,
+    contact: ApiContact,
+}
+
+export const createContact = createAsyncThunk<void, ApiContact>(
+    'contact/create',
+    async (contact) => {
+        await axiosApi.post('/contact.json', contact);
+    }
+);
+
+export const editContact = createAsyncThunk<void, UpdateContactParams>(
+    'contact/edit',
+    async ({id, contact}) => {
+        await axiosApi.put(`/contact/${id}.json`, contact);
+    }
+);
+
+export const deleteContact = createAsyncThunk<void, string, { dispatch: AppDispatch }>(
   'contact/delete',
   async (id: string, thunkAPI) => {
     await axiosApi.delete(`/contact/${id}.json`);

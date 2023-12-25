@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
         </span>
         <ul className="navbar-nav mr-auto flex-row gap-2 flex-nowrap">
           <li className="nav-item">
-            <NavLink to="/new-contact" className="nav-link">New Dish</NavLink>
+            <NavLink to="/new-contact" className="nav-link">New Contact</NavLink>
           </li>
         </ul>
       </div>
