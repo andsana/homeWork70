@@ -16,7 +16,7 @@ const Contacts = () => {
 
 
   return (
-    <>
+    <div className="contacts mt-2">
       {fetchLoading ? <Spinner/> : contacts.map((contact) => (
         <Contact
           key={contact.id}
@@ -26,7 +26,7 @@ const Contacts = () => {
           // onDelete={() => removeContact(contact.id)}
         />
       ))}
-    </>
+    </div>
   );
 };
 

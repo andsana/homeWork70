@@ -37,3 +37,11 @@ export const fetchContacts = createAsyncThunk<Contact[]>(
   }
 );
 
+export const deleteContact = createAsyncThunk<void, string, {dispatch: AppDispatch}>(
+  'contact/delete',
+  async (id: string, thunkAPI) => {
+    await axiosApi.delete(`/contact/${id}.json`);
+    await thunkAPI.dispatch(fetchContacts());
+  }
+);
+
