@@ -1,19 +1,21 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {ApiContact, Contact, ContactMutation} from '../types';
 import axiosApi from '../axiosApi/axiosApi';
+import {AppDispatch} from '../app/store';
 
-export const postContact = createAsyncThunk<void, ContactMutation>(
+export const postContact = createAsyncThunk<void, ContactMutation, {dispatch: AppDispatch}>(
   'contact/post',
-  async (contact) => {
+  async (contact, thunkAPI) => {
     const data: ApiContact = {
       ...contact,
       phone: parseFloat(contact.phone),
     };
     await axiosApi.post('/contact.json', data);
+    await thunkAPI.dispatch(fetchContacts());
   }
 );
 
-export const fetchContact = createAsyncThunk<Contact[]>(
+export const fetchContacts = createAsyncThunk<Contact[]>(
   'contact/fetchContacts',
   async () => {
     const contactResponse = await axiosApi.get('/contact.json');

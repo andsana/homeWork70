@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {ContactMutation} from '../../types';
-import {useAppDispatch} from '../../api/hooks';
+import {useAppDispatch} from '../../app/hooks';
 import {postContact} from '../../store/contactThunks';
 
 const initialState: ContactMutation = {
@@ -83,7 +83,6 @@ const ContactForm = () => {
             className="form-control"
             value={contact.photo}
             onChange={changeContact}
-            required
           />
         </div>
         <button type="submit" className="btn btn-primary mt-2">
