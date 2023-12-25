@@ -44,7 +44,7 @@ const Modal: React.FC = () => {
                 </div>
               </div>
               <div className="modal-footer">
-                <Link to={'/edit-contact/' + contact.id} className="btn btn-primary">Edit</Link>
+                <Link to={'/edit-contact/' + contact.id} className="btn btn-primary"  onClick={() => dispatch(showModal(contact))}>Edit</Link>
                 <button
                   className="btn btn-danger"
                   onClick={() => {dispatch(deleteContact(contact.id)); dispatch(showModal(contact));}}
